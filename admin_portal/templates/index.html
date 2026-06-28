@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Helper | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --sidebar: #0f172a;
+            --sidebar-hover: #1e293b;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 1.75rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .sidebar-logo .dot {
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .nav {
+            padding: 1.5rem 1rem;
+            flex: 1;
+        }
+
+        .nav-section {
+            font-size: .65rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            padding: .5rem .75rem;
+            margin-bottom: .5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: .875rem;
+            padding: .7rem .75rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: .5rem;
+            margin-bottom: .25rem;
+            font-size: .875rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .nav-item .badge-count {
+            margin-left: auto;
+            background: var(--primary);
+            color: #fff;
+            font-size: .65rem;
+            padding: .15rem .45rem;
+            border-radius: 9999px;
+            font-weight: 700;
+        }
+
+        /* ── Main ── */
+        .main {
+            flex: 1;
+            margin-left: 240px;
+        }
+
+        .topbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .topbar .sub {
+            font-size: .8rem;
+            color: var(--muted);
+            margin-top: .1rem;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        /* ── Stats ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: .875rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+            transition: transform .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: .75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .si-blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .si-green {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .si-amber {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .si-red {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .si-purple {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+        /* Live Indicator */
+        .live-tag {
+            background: #fecaca;
+            color: #b91c1c;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            animation: pulse 2s infinite;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #dc2626;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .stat-info {}
+
+        .stat-info .label {
+            font-size: .75rem;
+            color: var(--muted);
+            margin-bottom: .25rem;
+        }
+
+        .stat-info .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        /* ── Tabs ── */
+        .section {
+            background: var(--card);
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+        }
+
+        .tab {
+            padding: .875rem 1.25rem;
+            font-size: .875rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab .cnt {
+            font-size: .7rem;
+            font-weight: 700;
+            padding: .15rem .45rem;
+            border-radius: 9999px;
+        }
+
+        .tab.active .cnt {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .tab:not(.active) .cnt {
+            background: var(--border);
+            color: var(--muted);
+        }
+
+        .tab-panel {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ── Driver Cards ── */
+        .driver-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+
+        .driver-card {
+            border: 1px solid var(--border);
+            border-radius: .875rem;
+            overflow: hidden;
+            transition: box-shadow .2s;
+        }
+
+        .driver-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+        }
+
+        .dc-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .875rem;
+        }
+
+        .dc-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .dc-name {
+            font-weight: 700;
+            font-size: .95rem;
+        }
+
+        .dc-email {
+            font-size: .75rem;
+            color: var(--muted);
+            margin-top: .1rem;
+        }
+
+        .dc-status-badge {
+            margin-left: auto;
+            padding: .2rem .65rem;
+            border-radius: 9999px;
+            font-size: .7rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .dc-body {
+            padding: .75rem 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .dc-row {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+            font-size: .8rem;
+            color: var(--muted);
+            margin-bottom: .4rem;
+        }
+
+        .dc-row span {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .dc-actions {
+            padding: .875rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: .625rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: .55rem 1rem;
+            border-radius: .5rem;
+            border: none;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .4rem;
+        }
+
+        .btn-approve {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .btn-approve:hover {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .btn-reject {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .btn-revoke {
+            background: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .btn-revoke:hover {
+            background: #d97706;
+            color: #fff;
+        }
+
+        /* ── Rides Table ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: .75rem 1rem;
+            font-size: .75rem;
+            color: var(--muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        td {
+            padding: .875rem 1rem;
+            font-size: .8rem;
+            border-bottom: 1px solid #f8fafc;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: .2rem .65rem;
+            border-radius: 9999px;
+            font-size: .7rem;
+            font-weight: 700;
+        }
+
+        .badge-accepted {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-declined {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-completed {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        /* ── Empty States ── */
+        .empty {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--muted);
+        }
+
+        .empty .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: .4;
+        }
+
+        .empty h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: .5rem;
+        }
+
+        .empty p {
+            font-size: .85rem;
+        }
+
+        /* ── Alert ── */
+        .alert {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 1rem 1.25rem;
+            border-radius: .75rem;
+            border: 1px solid #fecaca;
+            margin-bottom: 1.5rem;
+            font-size: .875rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+        }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            padding: .875rem 1.5rem;
+            border-radius: .75rem;
+            font-size: .875rem;
+            font-weight: 500;
+            color: #fff;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+            animation: slideIn .3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ── Loading overlay ── */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Refresh btn ── */
+        .btn-refresh {
+            padding: .45rem .9rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: .5rem;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: cubic-bezier(0.075, 0.82, 0.165, 1) .2s;
+        }
+
+        .btn-refresh:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Custom Modal -->
+    <div id="customModal" class="loading-overlay" style="z-index: 10000;">
+        <div class="section" style="width: 400px; max-width: 90vw; padding: 2rem; text-align: center;">
+            <div id="modalIcon" style="font-size: 3rem; margin-bottom: 1rem;">❓</div>
+            <h3 id="modalTitle" style="margin-bottom: 0.5rem; color: var(--text);">Confirm Action</h3>
+            <p id="modalMessage" style="color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem;">Are you sure you want to proceed?</p>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn" style="background: var(--border); color: var(--text);" onclick="closeModal(false)">Cancel</button>
+                <button id="modalConfirmBtn" class="btn btn-approve">Yes, Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="dot"></div>
+            Go Helper
+        </div>
+        <nav class="nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-item active" onclick="showSection('dashboard')">
+                📊 <span>Dashboard</span>
+            </a>
+            <a class="nav-item" onclick="showSection('drivers')">
+                🚗 <span>Driver Approvals</span>
+                <span class="badge-count">{{ counts.pending_drivers }}</span>
+            </a>
+            <a class="nav-item" onclick="showSection('rides')">
+                🗺️ <span>Ride Activity</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="topbar-title" id="pageTitle" style="font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:10px;">
+                    Dashboard Overview
+                    <span class="live-tag"><span class="live-dot"></span> LIVE DATA</span>
+                </div>
+                <div class="sub">Go Helper Admin Portal</div>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-refresh" onclick="location.reload()" title="Hard Refresh">↻</button>
+                <div class="avatar" id="adminAvatar">A</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            {% if error %}
+            <div class="alert">
+                ⚠️ <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <!-- ── Dashboard Section ── -->
+            <div id="section-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon si-blue">👥</div>
+                        <div class="stat-info">
+                            <div class="label">Total Users</div>
+                            <div class="value" id="stat-total-users">{{ counts.total_users }}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon si-green">✅</div>
+                        <div class="stat-info">
+                            <div class="label">Active Drivers</div>
+                            <div class="value" id="stat-active-drivers">{{ counts.approved_drivers }}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon si-amber">⏳</div>
+                        <div class="stat-info">
+                            <div class="label">Pending Approval</div>
+                            <div class="value" id="stat-pending-drivers">{{ counts.pending_drivers }}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon si-purple">🛣️</div>
+                        <div class="stat-info">
+                            <div class="label">Active Rides</div>
+                            <div class="value" id="stat-active-rides">{{ counts.active_rides }}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon si-red">🚫</div>
+                        <div class="stat-info">
+                            <div class="label">Rejected Drivers</div>
+                            <div class="value" id="stat-rejected-drivers">{{ counts.rejected_drivers }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick pending approvals preview -->
+                {% if pending_drivers %}
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title"> Pending Driver Approvals</div>
+                        <a onclick="showSection('drivers')"
+                            style="font-size:.8rem;color:var(--primary);cursor:pointer;font-weight:600;">View All →</a>
+                    </div>
+                    <div style="padding:1.5rem;">
+                        <div class="driver-grid">
+                            {% for d in pending_drivers[:3] %}
+                            <div class="driver-card">
+                                <div class="dc-header" style="background:#fffbeb;">
+                                    <div class="dc-avatar" style="background:#fef3c7;color:#d97706;">{{
+                                        d.fullName[0]|upper if d.fullName else '?' }}</div>
+                                    <div>
+                                        <div class="dc-name">{{ d.fullName or 'Unknown' }}</div>
+                                        <div class="dc-email">{{ d.email or '' }}</div>
+                                    </div>
+                                    <span class="dc-status-badge"
+                                        style="background:#fef3c7;color:#92400e;">PENDING</span>
+                                </div>
+                                <div class="dc-body">
+                                    <div class="dc-row"> Phone: <span>{{ d.phone or 'N/A' }}</span></div>
+                                    <div class="dc-row"> Service: <span>{{ (d.serviceType or 'N/A')|upper }}</span>
+                                    </div>
+                                    <div class="dc-row"> Vehicle: <span>{{ d.vehicleModel or 'N/A' }}</span></div>
+                                    <div class="dc-row"> Plate: <span>{{ d.licensePlate or 'N/A' }}</span></div>
+                                </div>
+                                <div class="dc-actions">
+                                    <button class="btn btn-approve"
+                                        onclick="approveDriver('{{ d.uid }}', '{{ d.fullName }}')">
+                                        Approve</button>
+                                    <button class="btn btn-reject"
+                                        onclick="rejectDriver('{{ d.uid }}', '{{ d.fullName }}')">❌
+                                        Reject</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- ── Drivers Section ── -->
+            <div id="section-drivers" style="display:none;">
+                <div class="section">
+                    <div class="tabs">
+                        <div class="tab active" onclick="openTab(event,'tab-pending')">
+                            Pending <span class="cnt">{{ counts.pending_drivers }}</span>
+                        </div>
+                        <div class="tab" onclick="openTab(event,'tab-approved')">
+                            Approved <span class="cnt">{{ counts.approved_drivers }}</span>
+                        </div>
+                        <div class="tab" onclick="openTab(event,'tab-rejected')">
+                            Rejected <span class="cnt">{{ counts.rejected_drivers }}</span>
+                        </div>
+                    </div>
+
+                    <!-- PENDING -->
+                    <div class="tab-panel active" id="tab-pending">
+                        {% if pending_drivers %}
+                        <div class="driver-grid">
+                            {% for d in pending_drivers %}
+                            <div class="driver-card">
+                                <div class="dc-header" style="background:#fffbeb;">
+                                    <div class="dc-avatar" style="background:#fef3c7;color:#d97706;">{{
+                                        d.fullName[0]|upper if d.fullName else '?' }}</div>
+                                    <div>
+                                        <div class="dc-name">{{ d.fullName or 'Unknown' }}</div>
+                                        <div class="dc-email">{{ d.email or '' }}</div>
+                                    </div>
+                                    <span class="dc-status-badge"
+                                        style="background:#fef3c7;color:#92400e;">PENDING</span>
+                                </div>
+                                <div class="dc-body">
+                                    <div class="dc-row"> Phone: <span>{{ d.phone or 'N/A' }}</span></div>
+                                    <div class="dc-row"> Service: <span>{{ (d.serviceType or 'N/A')|upper }}</span>
+                                    </div>
+                                    <div class="dc-row"> Vehicle: <span>{{ d.vehicleModel or 'N/A' }}</span></div>
+                                    <div class="dc-row"> Plate: <span>{{ d.licensePlate or 'N/A' }}</span></div>
+                                </div>
+                                <div class="dc-actions">
+                                    <button class="btn btn-approve"
+                                        onclick="approveDriver('{{ d.uid }}', '{{ d.fullName }}')">
+                                        Approve</button>
+                                    <button class="btn btn-reject"
+                                        onclick="rejectDriver('{{ d.uid }}', '{{ d.fullName }}')">
+                                        Reject</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty">
+                            <div class="icon">📭</div>
+                            <h3>No Pending Applications</h3>
+                            <p>All driver applications have been reviewed.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- APPROVED -->
+                    <div class="tab-panel" id="tab-approved">
+                        {% if approved_drivers %}
+                        <div class="driver-grid">
+                            {% for d in approved_drivers %}
+                            <div class="driver-card">
+                                <div class="dc-header" style="background:#f0fdf4;">
+                                    <div class="dc-avatar" style="background:#dcfce7;color:#16a34a;">{{
+                                        d.fullName[0]|upper if d.fullName else '?' }}</div>
+                                    <div>
+                                        <div class="dc-name">{{ d.fullName or 'Unknown' }}</div>
+                                        <div class="dc-email">{{ d.email or '' }}</div>
+                                    </div>
+                                    <span class="dc-status-badge"
+                                        style="background:#dcfce7;color:#15803d;">APPROVED</span>
+                                </div>
+                                <div class="dc-body">
+                                    <div class="dc-row">📞 Phone: <span>{{ d.phone or 'N/A' }}</span></div>
+                                    <div class="dc-row">🔧 Service: <span>{{ (d.serviceType or 'N/A')|upper }}</span>
+                                    </div>
+                                    <div class="dc-row">🚗 Vehicle: <span>{{ d.vehicleModel or 'N/A' }}</span></div>
+                                    <div class="dc-row">🪪 Plate: <span>{{ d.licensePlate or 'N/A' }}</span></div>
+                                </div>
+                                <div class="dc-actions">
+                                    <button class="btn btn-reject"
+                                        onclick="rejectDriver('{{ d.uid }}', '{{ d.fullName }}')">❌
+                                        Reject</button>
+                                    <button class="btn btn-revoke"
+                                        onclick="revokeDriver('{{ d.uid }}', '{{ d.fullName }}')">⚠️
+                                        Revoke</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty">
+                            <div class="icon">✅</div>
+                            <h3>No Approved Drivers Yet</h3>
+                            <p>Approve pending applications to see them here.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- REJECTED -->
+                    <div class="tab-panel" id="tab-rejected">
+                        {% if rejected_drivers %}
+                        <div class="driver-grid">
+                            {% for d in rejected_drivers %}
+                            <div class="driver-card">
+                                <div class="dc-header" style="background:#fef2f2;">
+                                    <div class="dc-avatar" style="background:#fee2e2;color:#dc2626;">{{
+                                        d.fullName[0]|upper if d.fullName else '?' }}</div>
+                                    <div>
+                                        <div class="dc-name">{{ d.fullName or 'Unknown' }}</div>
+                                        <div class="dc-email">{{ d.email or '' }}</div>
+                                    </div>
+                                    <span class="dc-status-badge"
+                                        style="background:#fee2e2;color:#991b1b;">REJECTED</span>
+                                </div>
+                                <div class="dc-body">
+                                    <div class="dc-row">📞 Phone: <span>{{ d.phone or 'N/A' }}</span></div>
+                                    <div class="dc-row">🔧 Service: <span>{{ (d.serviceType or 'N/A')|upper }}</span>
+                                    </div>
+                                    <div class="dc-row">🚗 Vehicle: <span>{{ d.vehicleModel or 'N/A' }}</span></div>
+                                    <div class="dc-row">🪪 Plate: <span>{{ d.licensePlate or 'N/A' }}</span></div>
+                                </div>
+                                 <div class="dc-actions">
+                                    <button class="btn btn-approve"
+                                        onclick="approveDriver('{{ d.uid }}')">✅
+                                        Re-Approve</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty">
+                            <div class="icon">🚫</div>
+                            <h3>No Rejected Drivers</h3>
+                            <p>Rejected driver accounts will appear here.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Rides Section ── -->
+            <div id="section-rides" style="display:none;">
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">🗺️ Recent Ride Activity</div>
+                    </div>
+                    {% if rides %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Driver</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Fare</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ride in rides %}
+                            <tr>
+                                <td>{{ ride.customerName or '—' }}</td>
+                                <td>{{ ride.driverName or '—' }}</td>
+                                <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    {{ ride.fromLocation or '—' }}</td>
+                                <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    {{ ride.toLocation or '—' }}</td>
+                                <td>Rs {{ ride.fare or 0 }}</td>
+                                <td>
+                                    <span class="badge badge-{{ ride.status or 'pending' }}">{{ (ride.status or
+                                        'pending')|capitalize }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty">
+                        <div class="icon">🗺️</div>
+                        <h3>No Rides Yet</h3>
+                        <p>Ride activity will appear here once customers start booking.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </div><!-- /main -->
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYRPkrvjFMapcRLH9oL9voqswPPIotRec",
+            authDomain: "go-helper-7d911.firebaseapp.com",
+            projectId: "go-helper-7d911",
+            storageBucket: "go-helper-7d911.firebasestorage.app",
+            messagingSenderId: "370518949150",
+            appId: "1:370518949150:android:d49ee33aab8dfc3f191d0f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Cache to lookup names for confirms
+        let driverCache = {};
+        
+        // Initial populate from Jinja2 variables (pass as JSON to JS module)
+        const initialDrivers = {{ (pending_drivers + approved_drivers + rejected_drivers)|tojson|safe }};
+        initialDrivers.forEach(d => {
+            if (d.uid) driverCache[d.uid] = d.fullName || 'Unknown Driver';
+        });
+
+        // ── Realtime Listeners ──
+        let isPolling = false;
+
+        function updateUIWithData(data) {
+            // Update sidebar counts
+            const pending = data.pending.length;
+            const approved = data.approved.length;
+            const rejected = data.rejected.length;
+
+            const sidebarBadge = document.querySelector('.badge-count');
+            if (sidebarBadge) sidebarBadge.innerText = pending;
+
+            const tabBadges = document.querySelectorAll('.tab .cnt');
+            if (tabBadges.length >= 3) {
+                tabBadges[0].innerText = pending;
+                tabBadges[1].innerText = approved;
+                tabBadges[2].innerText = rejected;
+            }
+
+            // Update grids
+            const pendingGrid = document.querySelector('#section-dashboard .driver-grid');
+            const tabPending = document.querySelector('#tab-pending');
+            const tabApproved = document.querySelector('#tab-approved');
+            const tabRejected = document.querySelector('#tab-rejected');
+
+            let pendingHtml = data.pending.map(renderDriverCard).join('');
+            let approvedHtml = data.approved.map(renderDriverCard).join('');
+            let rejectedHtml = data.rejected.map(renderDriverCard).join('');
+
+            if (pendingGrid) pendingGrid.innerHTML = pendingHtml || '<div class="empty"><h3>No Pending Applications</h3></div>';
+            if (tabPending) tabPending.innerHTML = pendingHtml ? `<div class="driver-grid">${pendingHtml}</div>` : '<div class="empty"><h3>No Pending Applications</h3></div>';
+            if (tabApproved) tabApproved.innerHTML = approvedHtml ? `<div class="driver-grid">${approvedHtml}</div>` : '<div class="empty"><h3>No Approved Drivers</h3></div>';
+            if (tabRejected) tabRejected.innerHTML = rejectedHtml ? `<div class="driver-grid">${rejectedHtml}</div>` : '<div class="empty"><h3>No Rejected Drivers</h3></div>';
+        }
+
+        // ── Backend Polling Fallback ──
+        async function fetchDashboardFromBackend() {
+            try {
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                
+                // Update Drivers
+                updateUIWithData(data.drivers);
+                
+                // Update Stats
+                updateStatsUI(data.counts);
+                
+                // Update Rides
+                updateRidesUI(data.recent_rides);
+                
+                if (isPolling) updateBadge();
+            } catch (e) {
+                console.error("Manual polling error:", e);
+            }
+        }
+
+        function updateStatsUI(counts) {
+            const mappings = {
+                'total_users': 'stat-total-users',
+                'approved_drivers': 'stat-active-drivers',
+                'pending_drivers': 'stat-pending-drivers',
+                'active_rides': 'stat-active-rides',
+                'rejected_drivers': 'stat-rejected-drivers'
+            };
+            for (const [key, id] of Object.entries(mappings)) {
+                const el = document.getElementById(id);
+                if (el && counts[key] !== undefined) el.innerText = counts[key];
+            }
+        }
+
+        function updateRidesUI(rides) {
+            const tbody = document.querySelector('.table tbody');
+            if (!tbody || !rides) return;
+            
+            if (rides.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No recent rides found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rides.map(r => `
+                <tr>
+                    <td><code style="font-size:0.75rem">${r.id?.substring(0, 8) || 'N/A'}</code></td>
+                    <td>${r.customerName || 'Customer'}</td>
+                    <td>${r.driverName || '---'}</td>
+                    <td>$${r.fare || 0}</td>
+                    <td><span class="status-pill status-${r.status}">${r.status?.toUpperCase() || 'UNKNOWN'}</span></td>
+                    <td>${new Date(r.timestamp?.seconds * 1000 || Date.now()).toLocaleTimeString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBadge() {
+            if (isPolling) {
+                document.querySelector('.live-tag').innerHTML = '<span class="live-dot" style="background:#f59e0b"></span> POLLING';
+                document.querySelector('.live-tag').style.background = '#fef3c7';
+                document.querySelector('.live-tag').style.color = '#92400e';
+            } else {
+                document.querySelector('.live-tag').innerHTML = '<span class="live-dot"></span> LIVE DATA';
+                document.querySelector('.live-tag').style.background = '#fecaca';
+                document.querySelector('.live-tag').style.color = '#b91c1c';
+            }
+        }
+
+        function startPolling() {
+            if (isPolling) return;
+            isPolling = true;
+            console.log("Switching to manual polling (Backend Fallback)");
+            updateBadge();
+            setInterval(fetchDashboardFromBackend, 5000);
+            fetchDashboardFromBackend();
+        }
+
+        // 1. User/Driver Stream
+        onSnapshot(query(collection(db, "users"), where("userType", "==", "driver")), (snap) => {
+            let pending = [], approved = [], rejected = [];
+            snap.forEach(doc => {
+                const d = { ...doc.data(), uid: doc.id };
+                if (d.status === "approved") approved.push(d);
+                else if (d.status === "rejected") rejected.push(d);
+                else pending.push(d);
+            });
+            updateUIWithData({ pending, approved, rejected });
+        }, (err) => {
+            console.error("Firestore Listen Failed:", err);
+            if (err.code === 'permission-denied') {
+                startPolling();
+            }
+        });
+
+        // 2. Rides Counter
+        onSnapshot(query(collection(db, "rides"), where("status", "in", ["accepted", "picking", "on_ride"])), (snap) => {
+            document.getElementById('stat-active-rides').innerText = snap.size;
+        }, (err) => {
+            console.error("Rides Stream Failed:", err);
+        });
+
+        // 3. Driver Grids (Pending, Approved, Rejected)
+        function renderDriverCard(d) {
+            const statusColor = d.status === 'approved' ? '#f0fdf4' : (d.status === 'rejected' ? '#fef2f2' : '#fffbeb');
+            const avatarColor = d.status === 'approved' ? '#dcfce7' : (d.status === 'rejected' ? '#fee2e2' : '#fef3c7');
+            const textHigh = d.status === 'approved' ? '#16a34a' : (d.status === 'rejected' ? '#dc2626' : '#d97706');
+            const badgeBg = d.status === 'approved' ? '#dcfce7' : (d.status === 'rejected' ? '#fee2e2' : '#fef3c7');
+            const badgeText = d.status === 'approved' ? '#15803d' : (d.status === 'rejected' ? '#991b1b' : '#92400e');
+            
+            const actions = d.status === 'approved' ? `
+                <button class="btn btn-reject" onclick="rejectDriver('${d.uid}')">❌ Reject</button>
+                <button class="btn btn-revoke" onclick="revokeDriver('${d.uid}')">⚠️ Revoke</button>
+            ` : (d.status === 'rejected' ? `
+                <button class="btn btn-approve" onclick="approveDriver('${d.uid}')">✅ Re-Approve</button>
+            ` : `
+                <button class="btn btn-approve" onclick="approveDriver('${d.uid}')">Approve</button>
+                <button class="btn btn-reject" onclick="rejectDriver('${d.uid}')">Reject</button>
+            `);
+
+            return `
+                <div class="driver-card">
+                    <div class="dc-header" style="background:${statusColor};">
+                        <div class="dc-avatar" style="background:${avatarColor};color:${textHigh};">${(d.fullName || '?')[0].toUpperCase()}</div>
+                        <div>
+                            <div class="dc-name">${d.fullName || 'Unknown'}</div>
+                            <div class="dc-email">${d.email || ''}</div>
+                        </div>
+                        <span class="dc-status-badge" style="background:${badgeBg};color:${badgeText};">${(d.status || 'PENDING').toUpperCase()}</span>
+                    </div>
+                    <div class="dc-body">
+                        <div class="dc-row">📞 Phone: <span>${d.phone || 'N/A'}</span></div>
+                        <div class="dc-row">🔧 Service: <span>${(d.serviceType || 'N/A').toUpperCase()}</span></div>
+                        <div class="dc-row">🚗 Vehicle: <span>${d.vehicleModel || 'N/A'}</span></div>
+                        <div class="dc-row">🪪 Plate: <span>${d.licensePlate || 'N/A'}</span></div>
+                    </div>
+                    <div class="dc-actions">${actions}</div>
+                </div>
+            `;
+        }
+
+        // ── Navigation & Global state ──
+        window.showSection = (name) => {
+            const sections = ['dashboard', 'drivers', 'rides'];
+            const titles = { dashboard: 'Dashboard Overview', drivers: 'Driver Approvals', rides: 'Ride Activity' };
+            sections.forEach(s => {
+                document.getElementById('section-' + s).style.display = s === name ? 'block' : 'none';
+            });
+            document.getElementById('pageTitle').innerHTML = `${titles[name]} <span class="live-tag"></span>`;
+            updateBadge(); // Re-apply correctly based on isPolling
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+        };
+
+        window.openTab = (evt, tabId) => {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+        };
+
+        // ── API actions ──
+        async function doAction(url, successMsg, errorMsg) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+            try {
+                const res = await fetch(url, { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast(successMsg);
+                    // Force immediate dashboard refresh
+                    await fetchDashboardFromBackend();
+                } else {
+                    showToast(errorMsg + ": " + (data.detail || 'Unknown error'), true);
+                }
+            } catch (e) {
+                showToast(errorMsg, true);
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        let modalResolve = null;
+        window.showConfirm = (title, message, icon = '❓', confirmText = 'Confirm', confirmClass = 'btn-approve') => {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('modalConfirmBtn').innerText = confirmText;
+            document.getElementById('modalConfirmBtn').className = 'btn ' + confirmClass;
+            
+            document.getElementById('customModal').style.display = 'flex';
+            return new Promise((resolve) => {
+                modalResolve = resolve;
+            });
+        };
+
+        window.closeModal = (value) => {
+            document.getElementById('customModal').style.display = 'none';
+            if (modalResolve) modalResolve(value);
+        };
+
+        document.getElementById('modalConfirmBtn').onclick = () => closeModal(true);
+
+        window.approveDriver = async (uid) => {
+            const name = driverCache[uid] || 'Driver';
+            const ok = await showConfirm('Approve Driver', `Grant ${name} access to the platform?`, '✅', 'Approve', 'btn-approve');
+            if (!ok) return;
+            doAction(`/approve-driver/${uid}`, `✅ ${name} approved!`, 'Error approving');
+        };
+
+        window.rejectDriver = async (uid) => {
+            const name = driverCache[uid] || 'Driver';
+            const ok = await showConfirm('Reject Driver', `Decline application for ${name}?`, '❌', 'Reject', 'btn-reject');
+            if (!ok) return;
+            doAction(`/reject-driver/${uid}`, `❌ ${name} rejected.`, 'Error rejecting');
+        };
+
+        window.revokeDriver = async (uid) => {
+            const name = driverCache[uid] || 'Driver';
+            const ok = await showConfirm('Revoke Approval', `Revoke access for ${name}? They will be moved back to pending.`, '⚠️', 'Revoke', 'btn-revoke');
+            if (!ok) return;
+            doAction(`/revoke-driver/${uid}`, `⚠️ ${name}'s approval revoked.`, 'Error revoking');
+        };
+
+        window.showToast = (msg, color = '#16a34a') => {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.background = color;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        };
+    </script>
+</body>
+
+</html>

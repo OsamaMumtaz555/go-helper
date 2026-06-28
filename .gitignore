@@ -1,0 +1,35 @@
+# Firebase credentials (NEVER commit this!)
+admin_portal/serviceAccountKey.json
+
+# APK files (too large for GitHub)
+*.apk
+
+# Build outputs
+build_log.txt
+build_log2.txt
+go_helper/build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
