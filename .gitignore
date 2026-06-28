@@ -34,3 +34,5 @@ Thumbs.db
 # Temporary files
 *.log
 *.tmp
+sync_time.bat
+
