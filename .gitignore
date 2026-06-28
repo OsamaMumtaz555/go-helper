@@ -1,5 +1,6 @@
 # Firebase credentials (NEVER commit this!)
 admin_portal/serviceAccountKey.json
+FIREBASE_CREDENTIALS_FOR_RENDER.txt
 
 # APK files (too large for GitHub)
 *.apk
